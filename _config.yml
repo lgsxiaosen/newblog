@@ -3,18 +3,18 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
-subtitle:
+title: 我的博客
+subtitle: 
 description:
 keywords:
-author: John Doe
-language:
+author: gsliu
+language: zh_CN
 timezone:
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
-root: /
+url: http://github.com/lgsdaredevil/
+root: /newblog
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 
@@ -40,6 +40,7 @@ relative_link: false
 future: true
 highlight:
   enable: true
+  hljs: true # 添加这一行！
   line_number: true
   auto_detect: false
   tab_replace:
@@ -73,9 +74,29 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+# theme: aria
+# theme: yilia
+theme: hiker
+# -----------aria配置---------
+# Hexo localsearch
+search:
+  path: search.xml
+  field: all
+
+# Hexo generator feed
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type:
+  type: git
+  repository: https://github.com/lgsdaredevil/newblog.git
+  # repository: git@github.com/lgsdaredevil/newblog.github.io.git # 博客仓库地址
+  branch: master
