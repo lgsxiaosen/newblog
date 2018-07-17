@@ -1,10 +1,10 @@
 ---
-title: spring boot使用@Async异步任务
+title: spring boot使用Async异步任务
 date: 2018-07-17 11:04:05
 tags:
 - java
 - spring boot
-- @Async
+- Async
 - 异步
 category:
 - 技术文章
@@ -13,11 +13,12 @@ category:
 #### 开启异步任务
 
 在应用主类中添加@EnableAsync注解
-![在应用主类中添加注解](image/QQ20180717111459.png)
+![在应用主类中添加注解](/../favicons/QQ20180717111459.png)
+
 
 #### 写异步任务方法
 ```java
-@Async
+	@Async
     public Future<String> ansync(String name){
         try {
             Thread.sleep(10000);
