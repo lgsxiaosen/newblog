@@ -7,8 +7,14 @@ tags:
 - Async
 - 异步
 category:
-- 技术文章
+- 技术文章项目
 ---
+
+
+
+github项目地址：https://github.com/lgsdaredevil/asyncTest
+
+
 
 #### 开启异步任务
 
