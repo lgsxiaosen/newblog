@@ -13,7 +13,7 @@ category:
 #### 开启异步任务
 
 在应用主类中添加@EnableAsync注解
-![在应用主类中添加注解](/../favicons/QQ20180717111459.png)
+![在应用主类中添加注解](https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/QQ20180717111459.png)
 
 
 #### 写异步任务方法
