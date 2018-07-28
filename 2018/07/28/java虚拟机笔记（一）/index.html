@@ -3,23 +3,28 @@
 <head>
   <meta charset="utf-8">
   
-  <title>hello world | 小森的博客</title>
+  <title>java虚拟机笔记（一） | 小森的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   
+  <meta name="keywords" content="javajvm虚拟机读书笔记" />
   
   
   
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  
+  <meta name="description" content="JDK和JRE区别​    1、一般把Java程序设计语言，java虚拟机，java API类库这三部分统称为JDK（Java Development Kit），JDK是用于支持Java程序开发的最小环境。 ​    2、Java API类库中Java SE API子集和Java虚拟机这两部分统称为JRE（Java Runtime Environment），JRE是支持Java程序运行的标准环境。">
+<meta name="keywords" content="java,jvm,虚拟机,读书笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://github.com/lgsdaredevil/2018/07/13/hello-world/index.html">
+<meta property="og:title" content="java虚拟机笔记（一）">
+<meta property="og:url" content="http://github.com/lgsdaredevil/2018/07/28/java虚拟机笔记（一）/index.html">
 <meta property="og:site_name" content="小森的博客">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="JDK和JRE区别​    1、一般把Java程序设计语言，java虚拟机，java API类库这三部分统称为JDK（Java Development Kit），JDK是用于支持Java程序开发的最小环境。 ​    2、Java API类库中Java SE API子集和Java虚拟机这两部分统称为JRE（Java Runtime Environment），JRE是支持Java程序运行的标准环境。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:updated_time" content="2018-07-13T11:52:49.718Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/java%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB%E6%89%80%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9.png">
+<meta property="og:updated_time" content="2018-07-28T02:44:11.535Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hello World">
-<meta name="twitter:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta name="twitter:title" content="java虚拟机笔记（一）">
+<meta name="twitter:description" content="JDK和JRE区别​    1、一般把Java程序设计语言，java虚拟机，java API类库这三部分统称为JDK（Java Development Kit），JDK是用于支持Java程序开发的最小环境。 ​    2、Java API类库中Java SE API子集和Java虚拟机这两部分统称为JRE（Java Runtime Environment），JRE是支持Java程序运行的标准环境。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/java%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB%E6%89%80%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9.png">
   
     <link rel="alternate" href="/atom.xml" title="小森的博客" type="application/atom+xml">
   
@@ -159,7 +164,7 @@
             
       <div id="content" class="outer">
         
-          <section id="main" style="float:none;"><article id="post-hello-world" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+          <section id="main" style="float:none;"><article id="post-java虚拟机笔记（一）" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     
     
@@ -167,7 +172,7 @@
         
   
     <h1 class="thumb" class="article-title" itemprop="name">
-      Hello World
+      java虚拟机笔记（一）
     </h1>
   
 
@@ -175,11 +180,13 @@
     
     <div class="article-meta">
       
-	<a href="/newblog/2018/07/13/hello-world/" class="article-date">
-	  <time datetime="2018-07-13T11:52:49.718Z" itemprop="datePublished">2018-07-13</time>
+	<a href="/newblog/2018/07/28/java虚拟机笔记（一）/" class="article-date">
+	  <time datetime="2018-07-28T00:43:53.000Z" itemprop="datePublished">2018-07-28</time>
 	</a>
 
       
+    <a class="article-category-link" href="/newblog/categories/技术文章/">技术文章</a>
+
       
 	<a class="article-views">
 	<span id="busuanzi_container_page_pv">
@@ -190,15 +197,24 @@
     </div>
     <div class="article-entry" itemprop="articleBody">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">"My New Post"</span><br></code></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h3 id="JDK和JRE区别"><a href="#JDK和JRE区别" class="headerlink" title="JDK和JRE区别"></a>JDK和JRE区别</h3><p>​    1、一般把Java程序设计语言，java虚拟机，java API类库这三部分统称为JDK（Java Development Kit），JDK是用于支持Java程序开发的最小环境。</p>
+<p>​    2、Java API类库中Java SE API子集和Java虚拟机这两部分统称为JRE（Java Runtime Environment），JRE是支持Java程序运行的标准环境。<br><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/java%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB%E6%89%80%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9.png" alt="java技术体系所包含的内容"></p>
+<h2 id="Java虚拟机内存区域"><a href="#Java虚拟机内存区域" class="headerlink" title="Java虚拟机内存区域"></a>Java虚拟机内存区域</h2><h4 id="一、程序计数器"><a href="#一、程序计数器" class="headerlink" title="一、程序计数器"></a>一、程序计数器</h4><p>​    可以看做当前线程所执行的字节码的行号指示器。为线程私有的内存。是在Java虚拟机内存区域唯一一个不会内存溢出的区域。</p>
+<h4 id="二、Java虚拟机栈"><a href="#二、Java虚拟机栈" class="headerlink" title="二、Java虚拟机栈"></a>二、Java虚拟机栈</h4><p>​    Java虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧，用于存储局部变量表、操作数栈、动态链栈、方法出口等信息。Java虚拟机栈也是线程私有，生命周期和线程相同。</p>
+<p>​    Java虚拟机栈中的局部变量表：存放编译期可知的各种基本数据类型、引用类型（reference）和runAddress类型。局部变量表所需要的内存空间在编译期间完成内存分配，在方法运行期间不会改变局部变量表的大小。</p>
+<p>​    异常：</p>
+<p>1）StackOverflowError：线程请求的栈的深度大于虚拟机所允许的深度。</p>
+<p>2）OutOfMemoryError：扩展时无法申请到足够的内存。</p>
+<h4 id="三、本地方法栈"><a href="#三、本地方法栈" class="headerlink" title="三、本地方法栈"></a>三、本地方法栈</h4><p>​    与Java虚拟机栈类似，线程私有，会抛出StackOverflowError和OutOfMemoryError异常。</p>
+<p>​    Java虚拟机栈区别是本地方法栈为虚拟机使用的Native方法服务，Java虚拟机栈为虚拟机执行Java方法服务。</p>
+<h4 id="四、Java堆"><a href="#四、Java堆" class="headerlink" title="四、Java堆"></a>四、Java堆</h4><p>​    存放对象实例，被所有线程共享，虚拟机启动时创建。Java堆又称GC堆，垃圾收集器管理的主要区域。</p>
+<p>​    Java堆可以细分为：新生代和老年代。也可以分为Eden空间、From Survivor空间、To Survivor空间等。</p>
+<p>如果在堆中没有内存完成实例分配，并且也无法再扩展，会抛出OutOfMemoryError异常</p>
+<h4 id="五、方法区"><a href="#五、方法区" class="headerlink" title="五、方法区"></a>五、方法区</h4><p>​    用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。是线程共享的区域。</p>
+<p>​    与java堆一样不需要连续的内存和可以选择的固定大小并且可以扩展。不同点是可以选择不实现垃圾收集，这个区域主要的内存回收目标是针对常量池的回收和对类型的卸载。</p>
+<p>当方法区无法满足内存分配需求时，将抛出OutOfMemoryError异常</p>
+<h4 id="六、运行时常量池"><a href="#六、运行时常量池" class="headerlink" title="六、运行时常量池"></a>六、运行时常量池</h4><p>​    是方法区的一部分，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。具备动态特性，运行时也能将新的常量存放入池。同样在无法申请内存时会抛出OutOfMemoryError异常。</p>
+<h4 id="七、直接内存"><a href="#七、直接内存" class="headerlink" title="七、直接内存"></a>七、直接内存</h4><p>​    不是虚拟机运行数据区的一部分。NIO类可以使用Native函数库直接分配堆外内存，然后通过存储在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作，避免了在Java堆和Native堆中来回复制数据。也会抛OutOfMemoryErrory异常</p>
 
       
     </div>
@@ -225,7 +241,7 @@ var a = new Donate({
           </li>
           <li class="post-copyright-link">
           <strong>Post link:  </strong>
-          <a href="/newblog/2018/07/13/hello-world/" target="_blank" title="Hello World">http://github.com/lgsdaredevil/2018/07/13/hello-world/</a>
+          <a href="/newblog/2018/07/28/java虚拟机笔记（一）/" target="_blank" title="java虚拟机笔记（一）">http://github.com/lgsdaredevil/2018/07/28/java虚拟机笔记（一）/</a>
           </li>
           <li class="post-copyright-license">
             <strong>Copyright Notice:   </strong>
@@ -271,19 +287,10 @@ var a = new Donate({
     
 <nav id="article-nav">
   
-    <a href="/newblog/2018/07/17/spring-boot使用@Async异步任务/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          spring boot使用@Async异步任务
-        
-      </div>
-    </a>
   
-  
-    <a href="/newblog/2018/07/11/部署hexo博客到github/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/newblog/2018/07/17/spring-boot使用@Async异步任务/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">部署hexo博客到github</div>
+      <div class="article-nav-title">spring boot使用@Async异步任务</div>
     </a>
   
 </nav>
@@ -297,7 +304,7 @@ var a = new Donate({
     <div id="toc" class="toc-article">
     <strong class="toc-title">Contents</strong>
     
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#JDK和JRE区别"><span class="nav-number">1.</span> <span class="nav-text">JDK和JRE区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java虚拟机内存区域"><span class="nav-number"></span> <span class="nav-text">Java虚拟机内存区域</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、程序计数器"><span class="nav-number">0.1.</span> <span class="nav-text">一、程序计数器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、Java虚拟机栈"><span class="nav-number">0.2.</span> <span class="nav-text">二、Java虚拟机栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、本地方法栈"><span class="nav-number">0.3.</span> <span class="nav-text">三、本地方法栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、Java堆"><span class="nav-number">0.4.</span> <span class="nav-text">四、Java堆</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#五、方法区"><span class="nav-number">0.5.</span> <span class="nav-text">五、方法区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#六、运行时常量池"><span class="nav-number">0.6.</span> <span class="nav-text">六、运行时常量池</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#七、直接内存"><span class="nav-number">0.7.</span> <span class="nav-text">七、直接内存</span></a></li></ol></li></ol>
     
     </div>
   </aside>

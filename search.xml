@@ -3,6 +3,60 @@
   
     
     <entry>
+      <title>java虚拟机笔记（一）</title>
+      <link href="/newblog/2018/07/28/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/"/>
+      <url>/newblog/2018/07/28/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/</url>
+      <content type="html"><![CDATA[<h3 id="JDK和JRE区别"><a href="#JDK和JRE区别" class="headerlink" title="JDK和JRE区别"></a>JDK和JRE区别</h3><p>​    1、一般把Java程序设计语言，java虚拟机，java API类库这三部分统称为JDK（Java Development Kit），JDK是用于支持Java程序开发的最小环境。</p><p>​    2、Java API类库中Java SE API子集和Java虚拟机这两部分统称为JRE（Java Runtime Environment），JRE是支持Java程序运行的标准环境。<br><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/java%E6%8A%80%E6%9C%AF%E4%BD%93%E7%B3%BB%E6%89%80%E5%8C%85%E5%90%AB%E7%9A%84%E5%86%85%E5%AE%B9.png" alt="java技术体系所包含的内容"></p><h2 id="Java虚拟机内存区域"><a href="#Java虚拟机内存区域" class="headerlink" title="Java虚拟机内存区域"></a>Java虚拟机内存区域</h2><h4 id="一、程序计数器"><a href="#一、程序计数器" class="headerlink" title="一、程序计数器"></a>一、程序计数器</h4><p>​    可以看做当前线程所执行的字节码的行号指示器。为线程私有的内存。是在Java虚拟机内存区域唯一一个不会内存溢出的区域。</p><h4 id="二、Java虚拟机栈"><a href="#二、Java虚拟机栈" class="headerlink" title="二、Java虚拟机栈"></a>二、Java虚拟机栈</h4><p>​    Java虚拟机栈描述的是Java方法执行的内存模型：每个方法在执行的同时都会创建一个栈帧，用于存储局部变量表、操作数栈、动态链栈、方法出口等信息。Java虚拟机栈也是线程私有，生命周期和线程相同。</p><p>​    Java虚拟机栈中的局部变量表：存放编译期可知的各种基本数据类型、引用类型（reference）和runAddress类型。局部变量表所需要的内存空间在编译期间完成内存分配，在方法运行期间不会改变局部变量表的大小。</p><p>​    异常：</p><p>1）StackOverflowError：线程请求的栈的深度大于虚拟机所允许的深度。</p><p>2）OutOfMemoryError：扩展时无法申请到足够的内存。</p><h4 id="三、本地方法栈"><a href="#三、本地方法栈" class="headerlink" title="三、本地方法栈"></a>三、本地方法栈</h4><p>​    与Java虚拟机栈类似，线程私有，会抛出StackOverflowError和OutOfMemoryError异常。</p><p>​    Java虚拟机栈区别是本地方法栈为虚拟机使用的Native方法服务，Java虚拟机栈为虚拟机执行Java方法服务。</p><h4 id="四、Java堆"><a href="#四、Java堆" class="headerlink" title="四、Java堆"></a>四、Java堆</h4><p>​    存放对象实例，被所有线程共享，虚拟机启动时创建。Java堆又称GC堆，垃圾收集器管理的主要区域。</p><p>​    Java堆可以细分为：新生代和老年代。也可以分为Eden空间、From Survivor空间、To Survivor空间等。</p><p>如果在堆中没有内存完成实例分配，并且也无法再扩展，会抛出OutOfMemoryError异常</p><h4 id="五、方法区"><a href="#五、方法区" class="headerlink" title="五、方法区"></a>五、方法区</h4><p>​    用于存储已被虚拟机加载的类信息、常量、静态变量、即时编译器编译后的代码等数据。是线程共享的区域。</p><p>​    与java堆一样不需要连续的内存和可以选择的固定大小并且可以扩展。不同点是可以选择不实现垃圾收集，这个区域主要的内存回收目标是针对常量池的回收和对类型的卸载。</p><p>当方法区无法满足内存分配需求时，将抛出OutOfMemoryError异常</p><h4 id="六、运行时常量池"><a href="#六、运行时常量池" class="headerlink" title="六、运行时常量池"></a>六、运行时常量池</h4><p>​    是方法区的一部分，用于存放编译期生成的各种字面量和符号引用，这部分内容将在类加载后进入方法区的运行时常量池中存放。具备动态特性，运行时也能将新的常量存放入池。同样在无法申请内存时会抛出OutOfMemoryError异常。</p><h4 id="七、直接内存"><a href="#七、直接内存" class="headerlink" title="七、直接内存"></a>七、直接内存</h4><p>​    不是虚拟机运行数据区的一部分。NIO类可以使用Native函数库直接分配堆外内存，然后通过存储在Java堆中的DirectByteBuffer对象作为这块内存的引用进行操作，避免了在Java堆和Native堆中来回复制数据。也会抛OutOfMemoryErrory异常</p>]]></content>
+      
+      <categories>
+          
+          <category> 技术文章 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+            <tag> 虚拟机 </tag>
+            
+            <tag> 读书笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
+      <title>spring boot使用@Async异步任务</title>
+      <link href="/newblog/2018/07/17/spring-boot%E4%BD%BF%E7%94%A8@Async%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1/"/>
+      <url>/newblog/2018/07/17/spring-boot%E4%BD%BF%E7%94%A8@Async%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1/</url>
+      <content type="html"><![CDATA[<p>github项目地址：<a href="https://github.com/lgsdaredevil/asyncTest">https://github.com/lgsdaredevil/asyncTest</a></p><h4 id="开启异步任务"><a href="#开启异步任务" class="headerlink" title="开启异步任务"></a>开启异步任务</h4><p>在应用主类中添加@EnableAsync注解<br><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/QQ20180717111459.png" alt="在应用主类中添加注解"></p><h4 id="写异步任务方法"><a href="#写异步任务方法" class="headerlink" title="写异步任务方法"></a>写异步任务方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Async</span><br>   <span class="hljs-function"><span class="hljs-keyword">public</span> Future&lt;String&gt; <span class="hljs-title">ansync</span><span class="hljs-params">(String name)</span></span>&#123;<br>       <span class="hljs-keyword">try</span> &#123;<br>           Thread.sleep(<span class="hljs-number">10000</span>);<br>           logger.info(<span class="hljs-string">"这里是异步方法"</span>);<br>           logger.info(<span class="hljs-string">"传过来的名字是："</span> + name);<br>           name = <span class="hljs-string">"修改的名字"</span>;<br>           logger.info(<span class="hljs-string">"修改后的名字是："</span> + name);<br>           <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> AsyncResult&lt;&gt;(<span class="hljs-string">"name: "</span> + name);<br>       &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>           <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> AsyncResult&lt;&gt;(<span class="hljs-string">"异常"</span>);<br>       &#125;<br>   &#125;<br></code></pre></td></tr></table></figure><h4 id="调用异步方法"><a href="#调用异步方法" class="headerlink" title="调用异步方法"></a>调用异步方法</h4><ul><li>1、用Future获取返回值<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">requestAnsync</span><span class="hljs-params">(String name)</span></span>&#123;<br>        <span class="hljs-keyword">try</span> &#123;<br>            Long start = System.currentTimeMillis();<br>            Future&lt;String&gt; result = ansync(name);<br>            <span class="hljs-keyword">if</span> (result.isDone())&#123;<br>                name = result.get();<br>                logger.info(<span class="hljs-string">"异步方法结束，名字改为："</span> + name);<br>            &#125;<br>            Long end = System.currentTimeMillis();<br>            logger.info(<span class="hljs-string">"耗时："</span> + (<span class="hljs-keyword">int</span>)(end-start));<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">"hello "</span> + name;<br>        &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>            logger.error(<span class="hljs-string">"异常"</span>);<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">"异常"</span>;<br>        &#125;<br>    &#125;<br></code></pre></td></tr></table></figure></li></ul><p>返回值，若想获取到返回值，应该轮询方法获取，否则若果没有isDone则不会走下面的方法，或者可以使用CompletableFuture：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs undefined">2018-07-17 11:31:55.390  INFO 5232 --- [nio-8080-exec-6] c.e.async.service.AsyncTestService       : 耗时：0<br>2018-07-17 11:32:05.394  INFO 5232 --- [cTaskExecutor-3] com.example.async.service.AsyncTest      : 这里是异步方法<br>2018-07-17 11:32:05.394  INFO 5232 --- [cTaskExecutor-3] com.example.async.service.AsyncTest      : 传过来的名字是：ling<br>2018-07-17 11:32:05.394  INFO 5232 --- [cTaskExecutor-3] com.example.async.service.AsyncTest      : 修改后的名字是：修改的名字<br></code></pre></td></tr></table></figure></p><p>如果使用future.get()方法会阻塞线程直到拿到结果。</p><ul><li>2、不使用future.get()方法，异步方法不使用Future返回<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Async</span><br><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">noReturnAsync</span><span class="hljs-params">(String name)</span></span>&#123;<br>    <span class="hljs-keyword">try</span> &#123;<br>        Thread.sleep(<span class="hljs-number">10000</span>);<br>        logger.info(<span class="hljs-string">"这里是异步方法"</span>);<br>        logger.info(<span class="hljs-string">"传过来的名字是："</span> + name);<br>        name = <span class="hljs-string">"修改的名字"</span>;<br>        logger.info(<span class="hljs-string">"修改后的名字是："</span> + name);<br>    &#125;<span class="hljs-keyword">catch</span> (Exception e)&#123;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li></ul><p>调用异步的方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> String <span class="hljs-title">noReturn</span><span class="hljs-params">(String name)</span></span>&#123;<br>        Long start = System.currentTimeMillis();<br>        asyncTest.noReturnAsync(name);<br>        Long end = System.currentTimeMillis();<br>        logger.info(<span class="hljs-string">"耗时："</span> + (<span class="hljs-keyword">int</span>)(end-start));<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">"hello "</span> + name;<br>    &#125;<br></code></pre></td></tr></table></figure></p><h4 id="注意的地方："><a href="#注意的地方：" class="headerlink" title="注意的地方："></a>注意的地方：</h4><p>如果异步方法变成阻塞的同步方法，可能原因是异步方法和普通的调用方法在同一个类中，解决方法是将异步方法单独放到一个类中。<br>产生原因：spring对@Transactional注解时也有类似问题，spring扫描时具有@Transactional注解方法的类时，是生成一个代理类，由代理类去开启关闭事务，而在同一个类中，方法调用是在类体内执行的，spring无法截获这个方法调用。<br>具体参见：<a href="https://www.cnblogs.com/shihaiming/p/7825204.html" target="_blank" rel="noopener">Spring Boot使用@Async实现异步调用</a></p>]]></content>
+      
+      <categories>
+          
+          <category> 技术文章项目 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> spring boot </tag>
+            
+            <tag> Async </tag>
+            
+            <tag> 异步 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>Hello World</title>
       <link href="/newblog/2018/07/13/hello-world/"/>
       <url>/newblog/2018/07/13/hello-world/</url>
@@ -40,9 +94,9 @@
   
     
     <entry>
-      <title>categories</title>
-      <link href="/newblog/categories/index.html"/>
-      <url>/newblog/categories/index.html</url>
+      <title>about</title>
+      <link href="/newblog/about/index.html"/>
+      <url>/newblog/about/index.html</url>
       <content type="html"><![CDATA[]]></content>
     </entry>
     
@@ -54,9 +108,9 @@
     </entry>
     
     <entry>
-      <title>about</title>
-      <link href="/newblog/about/index.html"/>
-      <url>/newblog/about/index.html</url>
+      <title>categories</title>
+      <link href="/newblog/categories/index.html"/>
+      <url>/newblog/categories/index.html</url>
       <content type="html"><![CDATA[]]></content>
     </entry>
     
