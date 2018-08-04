@@ -1,5 +1,5 @@
 ---
-title: spring boot使用Async异步任务
+title: spring boot使用@Async异步任务
 date: 2018-07-17 11:04:05
 tags:
 - java
