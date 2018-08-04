@@ -257,6 +257,60 @@
         
           <section id="main" style="float:none;">
   
+    <article id="post-java虚拟机笔记（二）"  class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" itemprop="name">
+      <a class="article-title" href="/newblog/2018/08/04/java虚拟机笔记（二）/">java虚拟机笔记（二）</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/newblog/2018/08/04/java虚拟机笔记（二）/" class="article-date">
+	  <time datetime="2018-08-04T01:35:56.000Z" itemprop="datePublished">2018-08-04</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/newblog/categories/技术文章/">技术文章</a>
+
+      
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p class="article-excerpt-content">
+          判断对象是否存活一、引用计数算法​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。
+​    缺点：很难解决对象之间互相循环引用的问题。
+二、可达性分析算法​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，则此对象为不可用对象。
+
+如上图所示，Object1到Object4与GC Root之间存在引...
+        </p>
+        <p class="article-more-link">
+          <a href="/newblog/2018/08/04/java虚拟机笔记（二）/#more">Read More</a>
+        </p>
+      
+    </div>
+    <footer class="article-footer">
+      
+      
+      
+      
+
+    </footer>
+  </div>
+  
+</article>
+
+<!-- Table of Contents -->
+
+
+  
     <article id="post-java虚拟机笔记（一）"  class="article article-type-post" itemscope itemprop="blogPost" >
   <div id="articleInner" class="article-inner">
     

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>java虚拟机笔记（二） | 小森的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="javajvm虚拟机读书笔记" />
+  
+  
+  
+  
+  <meta name="description" content="判断对象是否存活一、引用计数算法​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。 ​    缺点：很难解决对象之间互相循环引用的问题。 二、可达性分析算法​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，">
+<meta name="keywords" content="java,jvm,虚拟机,读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java虚拟机笔记（二）">
+<meta property="og:url" content="http://github.com/lgsdaredevil/2018/08/04/java虚拟机笔记（二）/index.html">
+<meta property="og:site_name" content="小森的博客">
+<meta property="og:description" content="判断对象是否存活一、引用计数算法​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。 ​    缺点：很难解决对象之间互相循环引用的问题。 二、可达性分析算法​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95%E5%9B%BE%E7%89%87.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95.jpg">
+<meta property="og:updated_time" content="2018-08-04T08:46:04.295Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java虚拟机笔记（二）">
+<meta name="twitter:description" content="判断对象是否存活一、引用计数算法​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。 ​    缺点：很难解决对象之间互相循环引用的问题。 二、可达性分析算法​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95%E5%9B%BE%E7%89%87.png">
+  
+    <link rel="alternate" href="/atom.xml" title="小森的博客" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/newblog/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/newblog/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/newblog/css/style.css">
+
+  <script src="/newblog/js/jquery-3.1.1.min.js"></script>
+  <script src="/newblog/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/newblog/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/newblog/css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/newblog/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/newblog/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/newblog/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/newblog/">主页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/archives">文章</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/newblog/',
+        CONTENT_URL: '/newblog/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/newblog/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-java虚拟机笔记（二）" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      java虚拟机笔记（二）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/newblog/2018/08/04/java虚拟机笔记（二）/" class="article-date">
+	  <time datetime="2018-08-04T01:35:56.000Z" itemprop="datePublished">2018-08-04</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/newblog/categories/技术文章/">技术文章</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="判断对象是否存活"><a href="#判断对象是否存活" class="headerlink" title="判断对象是否存活"></a>判断对象是否存活</h1><h3 id="一、引用计数算法"><a href="#一、引用计数算法" class="headerlink" title="一、引用计数算法"></a>一、引用计数算法</h3><p>​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。</p>
+<p>​    缺点：很难解决对象之间互相循环引用的问题。</p>
+<h3 id="二、可达性分析算法"><a href="#二、可达性分析算法" class="headerlink" title="二、可达性分析算法"></a>二、可达性分析算法</h3><p>​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，则此对象为不可用对象。</p>
+<p><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95%E5%9B%BE%E7%89%87.png" alt="可达性分析算法判断对象是否可以回收"></p>
+<p>如上图所示，Object1到Object4与GC Root之间存在引用链，所以Object1到Object4的对象是可达对象，而Object5和Object6没有雨GC Root相关的引用链，所以Object5和Object6是不可达对象，是可以回收的对象。</p>
+<p>​    Java中可以被称为GC Root的对象有以下几种：</p>
+<ul>
+<li><p>虚拟机栈中引用的对象</p>
+</li>
+<li><p>方法区中类静态属性引用的对象</p>
+</li>
+<li><p>方法区中常量引用的对象</p>
+</li>
+<li><p>本地方法栈中JNI（Native方法）引用的对象</p>
+</li>
+</ul>
+<h3 id="三、四种引用类型"><a href="#三、四种引用类型" class="headerlink" title="三、四种引用类型"></a>三、四种引用类型</h3><ul>
+<li><p>强引用：类似于new一个对象的引用，只要强引用存在，垃圾收集器永远不会回收掉被引用的对象。</p>
+</li>
+<li><p>软引用：描述的是一些还有用但并非必须的对象，对于软引用关联的对象，在系统将要发生内存溢出之前，会把这些对象列进回收范围之中进行第二次回收，如果这次回收还没有足够的内存就会抛出内存溢出异常。</p>
+</li>
+<li><p>弱引用：描述非必须对象，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。当垃圾收集器工作时，无论当前内存是否足够，都会回收只被弱引用关联的对象。</p>
+</li>
+<li><p>虚引用：一个对象是否有虚引用存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的就是当这个对象被收集器收集时会收到一个系统通知。</p>
+</li>
+</ul>
+<p>如果一个对象在可达性分析时没后没有与GC Root相连接的引用链，它将会第一次标记并筛选，筛选条件是该对象是否有必要执行finalize()方法，如果有必要执行finalize()方法，对象只要重新与引用链上的任何一个对象建立关联即可，拿在第二次标记时将他移除“即将回收”集合。任何对象的finalize()方法只会被调用一次，如果对象面临下一次回收，它的finalize()方法不会被再次执行。</p>
+<h1 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h1><h3 id="一、标记—清除算法"><a href="#一、标记—清除算法" class="headerlink" title="一、标记—清除算法"></a>一、标记—清除算法</h3><p>​    首先标记出所有要回收的对象，在标记完成后统一回收被标记的对象。</p>
+<p>​    缺点：1、效率问题，标记和清除两个过程的效率都不高。<br>           2、空间问题，标记清除会产生大量不连续的内存碎片，空间碎片太多会导致以后程序运行过程中需要分配较大对象时，无法找到足够的连续内存而不得进行另一次垃圾收集动作。</p>
+<h3 id="二、复制算法"><a href="#二、复制算法" class="headerlink" title="二、复制算法"></a>二、复制算法</h3><p>​    将内存安容量分为大小相等的两块，每次只使用其中一块，当着一块内存用完后，将存活的对象复制到另一块上面，再把已使用的内存清理掉。</p>
+<p>​    一般虚拟机是将内存分为一块较大的Eden空间和两块较小的Survivor空间。每次使用？Eden和其中一块Survivor，回收时，将Eden和Survivor还存后的对象复制到Survivor空间，再清理掉刚才用到的Survivor和Eden空间。当Survivor内存不足时会用到其他内存（老年代）进行分配担保。</p>
+<p>​    缺点：在对象存活率较高时就要进行较多的复制操作，效率会变低，老年代一般不能直接选用这种做法。</p>
+<h3 id="三、标记—整理算法"><a href="#三、标记—整理算法" class="headerlink" title="三、标记—整理算法"></a>三、标记—整理算法</h3><p>​    标记过程与标记—清除算法相同，然后让所有存活的对象都像一端移动，然后直接清理掉端边界以外的内存。适用于老年代整理。</p>
+<p><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95.jpg" alt="三种垃圾收集算法图片"></p>
+<h3 id="四、分代收集算法"><a href="#四、分代收集算法" class="headerlink" title="四、分代收集算法"></a>四、分代收集算法</h3><p>​    一般根据对象存活周期将对象划分为几块。Java堆分为新生代和老年代。新生代一般采用复制算法，而老年代对象存活较高，没有额外空间对它进行分配担保，就必须使用标记—清除或标记—整理算法。</p>
+<h1 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h1><h3 id="一、Serial收集器"><a href="#一、Serial收集器" class="headerlink" title="一、Serial收集器"></a>一、Serial收集器</h3><p>​    是虚拟机在client模式下默认的新生代收集器，是单线程收集器，必须停掉其他所有工作线程，知道他收集结束。</p>
+<h3 id="二、ParNew收集器"><a href="#二、ParNew收集器" class="headerlink" title="二、ParNew收集器"></a>二、ParNew收集器</h3><p>​    时Serial收集器的多线程版本。是许多运行在server模式下的虚拟机的首选的新生代收集器。除了Serial收集器外，只有它能与CMS收集器配合工作。</p>
+<h3 id="三、Parallel-Scavenge收集器"><a href="#三、Parallel-Scavenge收集器" class="headerlink" title="三、Parallel Scavenge收集器"></a>三、Parallel Scavenge收集器</h3><p>​    并行多线程的新生代收集器。CMS等收集器的特点是尽可能缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目的是达到一个可控制吞吐量。吞吐量是指CPU用于运行用户代码的时间与CPU总消耗的时间的比值</p>
+<h3 id="四、Serial-Old收集器"><a href="#四、Serial-Old收集器" class="headerlink" title="四、Serial Old收集器"></a>四、Serial Old收集器</h3><p>​    是Serial收集器的老年代版本，单线程收集器。主要是给client模式下的虚拟机使用。在server模式下：一是可以与Parallel Scavenge收集器配合使用。另一方面是作为CMS收集器的后备方案。</p>
+<h3 id="五、Parallel-Old收集器"><a href="#五、Parallel-Old收集器" class="headerlink" title="五、Parallel Old收集器"></a>五、Parallel Old收集器</h3><p>​    是Parallel Scavenge收集器的老年代版本，使用多线程和标记—整理算法。</p>
+<h3 id="六、CMS收集器"><a href="#六、CMS收集器" class="headerlink" title="六、CMS收集器"></a>六、CMS收集器</h3><p>​    是一种以获取最短回收时间为目标的收集器。基于标记—清除算法实现。运作过程：</p>
+<ol>
+<li>初始标记</li>
+<li>并发标记</li>
+<li>重新标记</li>
+<li>并发清除</li>
+</ol>
+<p>其中初始标记和重新标记需要“stop the world”，并发标记和并发清除是和用户线程一起进行的。</p>
+<p>缺点：1、对CPU资源敏感，因为占用了一部分线程而导致应用程序变慢，总吞吐量会降低。</p>
+<p>​       2、收集器无法处理浮动垃圾。</p>
+<p>​       3.采用标记—清除算法会产生大量空间碎片。</p>
+<h3 id="七、G1收集器"><a href="#七、G1收集器" class="headerlink" title="七、G1收集器"></a>七、G1收集器</h3><p>​    面向服务端应用的垃圾收集器。优点如下：</p>
+<ul>
+<li><p>并行并发</p>
+</li>
+<li><p>分代收集</p>
+</li>
+<li><p>空间整合</p>
+</li>
+<li><p>可预测停顿</p>
+</li>
+</ul>
+<p>它将整个Java堆分为多个大小相等的独立区域，保留新生代和老年代概念，但他们不是物理隔离，都是一部分Region的集合。G1跟踪各个Region里面的垃圾堆积的价值大小，在后台维护一个优先列表，每次根据允许的手机时间，优先回收价值大的Region。</p>
+<p>G1的操作步骤：</p>
+<ul>
+<li>初始标记</li>
+<li>并发标记</li>
+<li>最终标记</li>
+<li>筛选回收</li>
+</ul>
+<h1 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h1><h3 id="一、对象优先在Eden分配"><a href="#一、对象优先在Eden分配" class="headerlink" title="一、对象优先在Eden分配"></a>一、对象优先在Eden分配</h3><h3 id="二、大对象直接进入老年代"><a href="#二、大对象直接进入老年代" class="headerlink" title="二、大对象直接进入老年代"></a>二、大对象直接进入老年代</h3><p>​    需要大量连续的内存空间的Java对象，最典型就是很长的字符串以及数组。</p>
+<h3 id="三、长期存活的对象进入老年代"><a href="#三、长期存活的对象进入老年代" class="headerlink" title="三、长期存活的对象进入老年代"></a>三、长期存活的对象进入老年代</h3><p>​    虚拟机给每一个对象定义年龄计数器，在Eden代出生并经过一次Minor GC仍存后，并能被Survivor接收，被移到Survivor空间中，年龄加一。在Survivor中每熬过一次GC，年龄就加一。当年龄到一定长度后就进入老年代。</p>
+<h3 id="四、动态对象年龄判断"><a href="#四、动态对象年龄判断" class="headerlink" title="四、动态对象年龄判断"></a>四、动态对象年龄判断</h3><p>​    如果在Survivor中的相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于等于改年龄的对象就会进入老年代。</p>
+<h3 id="五、空间分配担保"><a href="#五、空间分配担保" class="headerlink" title="五、空间分配担保"></a>五、空间分配担保</h3><p>​    在Minor GC前虚拟机会先检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果条件成立，那么Minor GC可以确保安全。否则虚拟机会查看HandelPromotionFailure设置的值是否允许担保失败，如果是，则在检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，尝试进行一次Minor GC。否则进行一次Full GC</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="/newblog/js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/wechatlike.jpg',
+  alipayImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/alipay.png'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong></a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/newblog/2018/08/04/java虚拟机笔记（二）/" target="_blank" title="java虚拟机笔记（二）">http://github.com/lgsdaredevil/2018/08/04/java虚拟机笔记（二）/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/newblog/2018/07/28/java虚拟机笔记（一）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java虚拟机笔记（一）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#判断对象是否存活"><span class="nav-number">1.</span> <span class="nav-text">判断对象是否存活</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、引用计数算法"><span class="nav-number">1.0.1.</span> <span class="nav-text">一、引用计数算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、可达性分析算法"><span class="nav-number">1.0.2.</span> <span class="nav-text">二、可达性分析算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、四种引用类型"><span class="nav-number">1.0.3.</span> <span class="nav-text">三、四种引用类型</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#垃圾收集算法"><span class="nav-number">2.</span> <span class="nav-text">垃圾收集算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、标记—清除算法"><span class="nav-number">2.0.1.</span> <span class="nav-text">一、标记—清除算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、复制算法"><span class="nav-number">2.0.2.</span> <span class="nav-text">二、复制算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、标记—整理算法"><span class="nav-number">2.0.3.</span> <span class="nav-text">三、标记—整理算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、分代收集算法"><span class="nav-number">2.0.4.</span> <span class="nav-text">四、分代收集算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#垃圾收集器"><span class="nav-number">3.</span> <span class="nav-text">垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Serial收集器"><span class="nav-number">3.0.1.</span> <span class="nav-text">一、Serial收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、ParNew收集器"><span class="nav-number">3.0.2.</span> <span class="nav-text">二、ParNew收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、Parallel-Scavenge收集器"><span class="nav-number">3.0.3.</span> <span class="nav-text">三、Parallel Scavenge收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、Serial-Old收集器"><span class="nav-number">3.0.4.</span> <span class="nav-text">四、Serial Old收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、Parallel-Old收集器"><span class="nav-number">3.0.5.</span> <span class="nav-text">五、Parallel Old收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、CMS收集器"><span class="nav-number">3.0.6.</span> <span class="nav-text">六、CMS收集器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七、G1收集器"><span class="nav-number">3.0.7.</span> <span class="nav-text">七、G1收集器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#内存分配与回收策略"><span class="nav-number">4.</span> <span class="nav-text">内存分配与回收策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、对象优先在Eden分配"><span class="nav-number">4.0.1.</span> <span class="nav-text">一、对象优先在Eden分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、大对象直接进入老年代"><span class="nav-number">4.0.2.</span> <span class="nav-text">二、大对象直接进入老年代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、长期存活的对象进入老年代"><span class="nav-number">4.0.3.</span> <span class="nav-text">三、长期存活的对象进入老年代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、动态对象年龄判断"><span class="nav-number">4.0.4.</span> <span class="nav-text">四、动态对象年龄判断</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、空间分配担保"><span class="nav-number">4.0.5.</span> <span class="nav-text">五、空间分配担保</span></a></li></ol></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/lgsdaredevil/newblog/tree/resource-newblog" target="_blank">resource-newblog</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018  All Rights Reserved.</p>
+        <!--<p id="copyRightEn">Copyright &copy; 2013 - 2018 小森的博客 All Rights Reserved.</p> -->
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客 : <span id="busuanzi_value_site_uv"></span> |  
+				浏览量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/newblog/" class="mobile-nav-link">主页</a>
+  
+    <a href="/newblog/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/newblog/categories" class="mobile-nav-link">分类</a>
+  
+    <a href="/newblog/tags" class="mobile-nav-link">标签</a>
+  
+    <a href="/newblog/about" class="mobile-nav-link">关于</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/newblog/fancybox/jquery.fancybox.css">
+  <script src="/newblog/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/newblog/js/scripts.js"></script>
+
+
+
+
+  <script src="/newblog/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            小森的博客
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 小森的博客 All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

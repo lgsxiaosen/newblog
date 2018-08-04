@@ -3,6 +3,33 @@
   
     
     <entry>
+      <title>java虚拟机笔记（二）</title>
+      <link href="/newblog/2018/08/04/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+      <url>/newblog/2018/08/04/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%BA%8C%EF%BC%89/</url>
+      <content type="html"><![CDATA[<h1 id="判断对象是否存活"><a href="#判断对象是否存活" class="headerlink" title="判断对象是否存活"></a>判断对象是否存活</h1><h3 id="一、引用计数算法"><a href="#一、引用计数算法" class="headerlink" title="一、引用计数算法"></a>一、引用计数算法</h3><p>​    给对象中添加一个引用计数器，每当有一个地方引用他时就给计数器值加一；当引用失效时，计数器值就减一；任何时刻计数器为0的对象就是不可能再被使用的。</p><p>​    缺点：很难解决对象之间互相循环引用的问题。</p><h3 id="二、可达性分析算法"><a href="#二、可达性分析算法" class="headerlink" title="二、可达性分析算法"></a>二、可达性分析算法</h3><p>​    以“GC Root”对象为起始点，从此节点向下搜索，搜索所走的路径成为引用链，当一个对象和GC Root之间没有任何引用链的时候，则此对象为不可用对象。</p><p><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%AF%E8%BE%BE%E6%80%A7%E5%88%86%E6%9E%90%E7%AE%97%E6%B3%95%E5%9B%BE%E7%89%87.png" alt="可达性分析算法判断对象是否可以回收"></p><p>如上图所示，Object1到Object4与GC Root之间存在引用链，所以Object1到Object4的对象是可达对象，而Object5和Object6没有雨GC Root相关的引用链，所以Object5和Object6是不可达对象，是可以回收的对象。</p><p>​    Java中可以被称为GC Root的对象有以下几种：</p><ul><li><p>虚拟机栈中引用的对象</p></li><li><p>方法区中类静态属性引用的对象</p></li><li><p>方法区中常量引用的对象</p></li><li><p>本地方法栈中JNI（Native方法）引用的对象</p></li></ul><h3 id="三、四种引用类型"><a href="#三、四种引用类型" class="headerlink" title="三、四种引用类型"></a>三、四种引用类型</h3><ul><li><p>强引用：类似于new一个对象的引用，只要强引用存在，垃圾收集器永远不会回收掉被引用的对象。</p></li><li><p>软引用：描述的是一些还有用但并非必须的对象，对于软引用关联的对象，在系统将要发生内存溢出之前，会把这些对象列进回收范围之中进行第二次回收，如果这次回收还没有足够的内存就会抛出内存溢出异常。</p></li><li><p>弱引用：描述非必须对象，被弱引用关联的对象只能生存到下一次垃圾收集发生之前。当垃圾收集器工作时，无论当前内存是否足够，都会回收只被弱引用关联的对象。</p></li><li><p>虚引用：一个对象是否有虚引用存在，完全不会对其生存时间构成影响，也无法通过虚引用来取得一个对象实例。为一个对象设置虚引用关联的唯一目的就是当这个对象被收集器收集时会收到一个系统通知。</p></li></ul><p>如果一个对象在可达性分析时没后没有与GC Root相连接的引用链，它将会第一次标记并筛选，筛选条件是该对象是否有必要执行finalize()方法，如果有必要执行finalize()方法，对象只要重新与引用链上的任何一个对象建立关联即可，拿在第二次标记时将他移除“即将回收”集合。任何对象的finalize()方法只会被调用一次，如果对象面临下一次回收，它的finalize()方法不会被再次执行。</p><h1 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h1><h3 id="一、标记—清除算法"><a href="#一、标记—清除算法" class="headerlink" title="一、标记—清除算法"></a>一、标记—清除算法</h3><p>​    首先标记出所有要回收的对象，在标记完成后统一回收被标记的对象。</p><p>​    缺点：1、效率问题，标记和清除两个过程的效率都不高。<br>           2、空间问题，标记清除会产生大量不连续的内存碎片，空间碎片太多会导致以后程序运行过程中需要分配较大对象时，无法找到足够的连续内存而不得进行另一次垃圾收集动作。</p><h3 id="二、复制算法"><a href="#二、复制算法" class="headerlink" title="二、复制算法"></a>二、复制算法</h3><p>​    将内存安容量分为大小相等的两块，每次只使用其中一块，当着一块内存用完后，将存活的对象复制到另一块上面，再把已使用的内存清理掉。</p><p>​    一般虚拟机是将内存分为一块较大的Eden空间和两块较小的Survivor空间。每次使用？Eden和其中一块Survivor，回收时，将Eden和Survivor还存后的对象复制到Survivor空间，再清理掉刚才用到的Survivor和Eden空间。当Survivor内存不足时会用到其他内存（老年代）进行分配担保。</p><p>​    缺点：在对象存活率较高时就要进行较多的复制操作，效率会变低，老年代一般不能直接选用这种做法。</p><h3 id="三、标记—整理算法"><a href="#三、标记—整理算法" class="headerlink" title="三、标记—整理算法"></a>三、标记—整理算法</h3><p>​    标记过程与标记—清除算法相同，然后让所有存活的对象都像一端移动，然后直接清理掉端边界以外的内存。适用于老年代整理。</p><p><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E7%AE%97%E6%B3%95.jpg" alt="三种垃圾收集算法图片"></p><h3 id="四、分代收集算法"><a href="#四、分代收集算法" class="headerlink" title="四、分代收集算法"></a>四、分代收集算法</h3><p>​    一般根据对象存活周期将对象划分为几块。Java堆分为新生代和老年代。新生代一般采用复制算法，而老年代对象存活较高，没有额外空间对它进行分配担保，就必须使用标记—清除或标记—整理算法。</p><h1 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h1><h3 id="一、Serial收集器"><a href="#一、Serial收集器" class="headerlink" title="一、Serial收集器"></a>一、Serial收集器</h3><p>​    是虚拟机在client模式下默认的新生代收集器，是单线程收集器，必须停掉其他所有工作线程，知道他收集结束。</p><h3 id="二、ParNew收集器"><a href="#二、ParNew收集器" class="headerlink" title="二、ParNew收集器"></a>二、ParNew收集器</h3><p>​    时Serial收集器的多线程版本。是许多运行在server模式下的虚拟机的首选的新生代收集器。除了Serial收集器外，只有它能与CMS收集器配合工作。</p><h3 id="三、Parallel-Scavenge收集器"><a href="#三、Parallel-Scavenge收集器" class="headerlink" title="三、Parallel Scavenge收集器"></a>三、Parallel Scavenge收集器</h3><p>​    并行多线程的新生代收集器。CMS等收集器的特点是尽可能缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目的是达到一个可控制吞吐量。吞吐量是指CPU用于运行用户代码的时间与CPU总消耗的时间的比值</p><h3 id="四、Serial-Old收集器"><a href="#四、Serial-Old收集器" class="headerlink" title="四、Serial Old收集器"></a>四、Serial Old收集器</h3><p>​    是Serial收集器的老年代版本，单线程收集器。主要是给client模式下的虚拟机使用。在server模式下：一是可以与Parallel Scavenge收集器配合使用。另一方面是作为CMS收集器的后备方案。</p><h3 id="五、Parallel-Old收集器"><a href="#五、Parallel-Old收集器" class="headerlink" title="五、Parallel Old收集器"></a>五、Parallel Old收集器</h3><p>​    是Parallel Scavenge收集器的老年代版本，使用多线程和标记—整理算法。</p><h3 id="六、CMS收集器"><a href="#六、CMS收集器" class="headerlink" title="六、CMS收集器"></a>六、CMS收集器</h3><p>​    是一种以获取最短回收时间为目标的收集器。基于标记—清除算法实现。运作过程：</p><ol><li>初始标记</li><li>并发标记</li><li>重新标记</li><li>并发清除</li></ol><p>其中初始标记和重新标记需要“stop the world”，并发标记和并发清除是和用户线程一起进行的。</p><p>缺点：1、对CPU资源敏感，因为占用了一部分线程而导致应用程序变慢，总吞吐量会降低。</p><p>​       2、收集器无法处理浮动垃圾。</p><p>​       3.采用标记—清除算法会产生大量空间碎片。</p><h3 id="七、G1收集器"><a href="#七、G1收集器" class="headerlink" title="七、G1收集器"></a>七、G1收集器</h3><p>​    面向服务端应用的垃圾收集器。优点如下：</p><ul><li><p>并行并发</p></li><li><p>分代收集</p></li><li><p>空间整合</p></li><li><p>可预测停顿</p></li></ul><p>它将整个Java堆分为多个大小相等的独立区域，保留新生代和老年代概念，但他们不是物理隔离，都是一部分Region的集合。G1跟踪各个Region里面的垃圾堆积的价值大小，在后台维护一个优先列表，每次根据允许的手机时间，优先回收价值大的Region。</p><p>G1的操作步骤：</p><ul><li>初始标记</li><li>并发标记</li><li>最终标记</li><li>筛选回收</li></ul><h1 id="内存分配与回收策略"><a href="#内存分配与回收策略" class="headerlink" title="内存分配与回收策略"></a>内存分配与回收策略</h1><h3 id="一、对象优先在Eden分配"><a href="#一、对象优先在Eden分配" class="headerlink" title="一、对象优先在Eden分配"></a>一、对象优先在Eden分配</h3><h3 id="二、大对象直接进入老年代"><a href="#二、大对象直接进入老年代" class="headerlink" title="二、大对象直接进入老年代"></a>二、大对象直接进入老年代</h3><p>​    需要大量连续的内存空间的Java对象，最典型就是很长的字符串以及数组。</p><h3 id="三、长期存活的对象进入老年代"><a href="#三、长期存活的对象进入老年代" class="headerlink" title="三、长期存活的对象进入老年代"></a>三、长期存活的对象进入老年代</h3><p>​    虚拟机给每一个对象定义年龄计数器，在Eden代出生并经过一次Minor GC仍存后，并能被Survivor接收，被移到Survivor空间中，年龄加一。在Survivor中每熬过一次GC，年龄就加一。当年龄到一定长度后就进入老年代。</p><h3 id="四、动态对象年龄判断"><a href="#四、动态对象年龄判断" class="headerlink" title="四、动态对象年龄判断"></a>四、动态对象年龄判断</h3><p>​    如果在Survivor中的相同年龄所有对象大小的总和大于Survivor空间的一半，年龄大于等于改年龄的对象就会进入老年代。</p><h3 id="五、空间分配担保"><a href="#五、空间分配担保" class="headerlink" title="五、空间分配担保"></a>五、空间分配担保</h3><p>​    在Minor GC前虚拟机会先检查老年代最大可用的连续空间是否大于新生代所有对象的总空间，如果条件成立，那么Minor GC可以确保安全。否则虚拟机会查看HandelPromotionFailure设置的值是否允许担保失败，如果是，则在检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，尝试进行一次Minor GC。否则进行一次Full GC</p>]]></content>
+      
+      <categories>
+          
+          <category> 技术文章 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> java </tag>
+            
+            <tag> jvm </tag>
+            
+            <tag> 虚拟机 </tag>
+            
+            <tag> 读书笔记 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    <entry>
       <title>java虚拟机笔记（一）</title>
       <link href="/newblog/2018/07/28/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/"/>
       <url>/newblog/2018/07/28/java%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%AC%94%E8%AE%B0%EF%BC%88%E4%B8%80%EF%BC%89/</url>
@@ -101,16 +128,16 @@
     </entry>
     
     <entry>
-      <title>tags</title>
-      <link href="/newblog/tags/index.html"/>
-      <url>/newblog/tags/index.html</url>
+      <title>categories</title>
+      <link href="/newblog/categories/index.html"/>
+      <url>/newblog/categories/index.html</url>
       <content type="html"><![CDATA[]]></content>
     </entry>
     
     <entry>
-      <title>categories</title>
-      <link href="/newblog/categories/index.html"/>
-      <url>/newblog/categories/index.html</url>
+      <title>tags</title>
+      <link href="/newblog/tags/index.html"/>
+      <url>/newblog/tags/index.html</url>
       <content type="html"><![CDATA[]]></content>
     </entry>
     
