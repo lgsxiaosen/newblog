@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>&#39;java虚拟机笔记（三）&#39; | 小森的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="javajvm虚拟机读书笔记" />
+  
+  
+  
+  
+  <meta name="description" content="虚拟机类加载机制类加载时机​    类从被加载到虚拟机内存开始到卸载内存为止，整个生命周期包括：加载、验证、准备、解析、初始化、使用和卸载 ​    类必须立即初始化情况：  遇到 new、getstatic、putstatic和invokestatic这4条字节码指令时。 使用java.lang.reflect包方法对类进行反射调用时候。 当初始化一个类的时候，欺父类没有被初始化要先初始化其父类">
+<meta name="keywords" content="java,jvm,虚拟机,读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="&#39;java虚拟机笔记（三）&#39;">
+<meta property="og:url" content="http://github.com/lgsdaredevil/2018/08/11/java虚拟机笔记（三）/index.html">
+<meta property="og:site_name" content="小森的博客">
+<meta property="og:description" content="虚拟机类加载机制类加载时机​    类从被加载到虚拟机内存开始到卸载内存为止，整个生命周期包括：加载、验证、准备、解析、初始化、使用和卸载 ​    类必须立即初始化情况：  遇到 new、getstatic、putstatic和invokestatic这4条字节码指令时。 使用java.lang.reflect包方法对类进行反射调用时候。 当初始化一个类的时候，欺父类没有被初始化要先初始化其父类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B.jpg">
+<meta property="og:updated_time" content="2018-08-11T02:01:01.765Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="&#39;java虚拟机笔记（三）&#39;">
+<meta name="twitter:description" content="虚拟机类加载机制类加载时机​    类从被加载到虚拟机内存开始到卸载内存为止，整个生命周期包括：加载、验证、准备、解析、初始化、使用和卸载 ​    类必须立即初始化情况：  遇到 new、getstatic、putstatic和invokestatic这4条字节码指令时。 使用java.lang.reflect包方法对类进行反射调用时候。 当初始化一个类的时候，欺父类没有被初始化要先初始化其父类">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B.jpg">
+  
+    <link rel="alternate" href="/atom.xml" title="小森的博客" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/newblog/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/newblog/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/newblog/css/style.css">
+
+  <script src="/newblog/js/jquery-3.1.1.min.js"></script>
+  <script src="/newblog/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/newblog/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/newblog/css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/newblog/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/newblog/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/newblog/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/newblog/">主页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/archives">文章</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/newblog/',
+        CONTENT_URL: '/newblog/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/newblog/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-java虚拟机笔记（三）" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      &#39;java虚拟机笔记（三）&#39;
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/newblog/2018/08/11/java虚拟机笔记（三）/" class="article-date">
+	  <time datetime="2018-08-11T00:55:58.000Z" itemprop="datePublished">2018-08-11</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/newblog/categories/技术文章/">技术文章</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="虚拟机类加载机制"><a href="#虚拟机类加载机制" class="headerlink" title="虚拟机类加载机制"></a>虚拟机类加载机制</h1><h3 id="类加载时机"><a href="#类加载时机" class="headerlink" title="类加载时机"></a>类加载时机</h3><p>​    类从被加载到虚拟机内存开始到卸载内存为止，整个生命周期包括：<strong>加载、验证、准备、解析、初始化、使用和卸载</strong></p>
+<p>​    类必须立即初始化情况：</p>
+<ol>
+<li>遇到 new、getstatic、putstatic和invokestatic这4条字节码指令时。</li>
+<li>使用java.lang.reflect包方法对类进行反射调用时候。</li>
+<li>当初始化一个类的时候，欺父类没有被初始化要先初始化其父类。</li>
+<li>虚拟机启动时用户需要指定要执行的主类（包括main方法），虚拟机会先初始化这个主类。</li>
+<li>如果一个java.lang.reflect.MethodHandle实例最后的解析结果是REF_getStatic、REF_putStatic、REF_invokeStatic的方法句柄，并且这个方法句柄所对应的类没有初始化，则先触发其初始化。</li>
+</ol>
+<h3 id="类加载过程"><a href="#类加载过程" class="headerlink" title="类加载过程"></a>类加载过程</h3><h6 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h6><ol>
+<li>通过一个类的全限定名获取此类的二进制字节流。</li>
+<li>将这个字节流所代表的的静态存储结构转换成方法区的运行时数据结构。</li>
+<li>在内存生成一个代表这个类的java.lang.Class对象，作为方法区这个类的各种数据的访问接口。</li>
+</ol>
+<h6 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h6><p>​    是连接阶段的第一步，这个阶段的目的是为了确保Class文件的字节流中包含的信息符合当前虚拟机的要求，并不会危害虚拟机的自身安全。</p>
+<ul>
+<li><p>文件格式验证</p>
+<p>第一阶段验证字节流是否符合Class文件格式规范，并能被当前版本虚拟机处理。</p>
+</li>
+<li><p>云数据验证</p>
+<p>第二阶段对字节码描述的信息进行语义分析，确保描述信息符合Java语言要求规范。</p>
+</li>
+<li><p>字节码验证</p>
+<p>第三阶段对类的方法体进行校验分析，保证被校验的方法在运行时不会出现危害虚拟机的安全事件。</p>
+</li>
+<li><p>符号引用验证</p>
+<p>对类自身以外（常量池中的各种符号引用）的信息进行匹配校验。</p>
+</li>
+</ul>
+<h6 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h6><p>​    正式为变量分配内存并设置初始值的阶段，这些变量使用的内存将在方法区中分配。仅包括类变量（被static修饰）不包括实例变量。赋初值是指数据类型的零值。</p>
+<h6 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h6><p>​    将常量池中的符号引用替换为直接引用。</p>
+<ul>
+<li>符号引用：以一组符号来描述所引用的目标，符号可以是任何形式的字面量。</li>
+<li>直接引用：可以直接指向目标的指针、相对偏移量或能间接的定位到目标的句柄。</li>
+</ul>
+<h6 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h6><p>执行类中定义的Java程序代码，初始化阶段是执行类构造器（\<clinit>()）方法的过程。</clinit></p>
+<h3 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h3><p>启动类加载器、扩展类加载器、应用程序类加载器。</p>
+<h4 id="双亲委派模型"><a href="#双亲委派模型" class="headerlink" title="双亲委派模型"></a>双亲委派模型</h4><p><img src="https://raw.githubusercontent.com/lgsdaredevil/newblog/resource-newblog/source/favicons/article/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B.jpg" alt="双亲委派模型"></p>
+<p>双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应当有自己的父类加载器。这里的类加载器的父子关系一般是组合关系来复用父加载器的代码。</p>
+<p>​    工作过程：如果一个类加载器收到类加载请求，首先会把这个请求为派给父类加载器去完成，每一层的类加载器都是这样的，因此所有请求都传给顶层的启动类加载器，只有当父类加载器反馈无法完成加载请求，子类才会尝试自己加载。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="/newblog/js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/wechatlike.jpg',
+  alipayImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/alipay.png'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong></a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/newblog/2018/08/11/java虚拟机笔记（三）/" target="_blank" title="&#39;java虚拟机笔记（三）&#39;">http://github.com/lgsdaredevil/2018/08/11/java虚拟机笔记（三）/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/newblog/2018/08/04/java虚拟机笔记（二）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">java虚拟机笔记（二）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#虚拟机类加载机制"><span class="nav-number">1.</span> <span class="nav-text">虚拟机类加载机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载时机"><span class="nav-number">1.0.1.</span> <span class="nav-text">类加载时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载过程"><span class="nav-number">1.0.2.</span> <span class="nav-text">类加载过程</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#加载"><span class="nav-number">1.0.2.0.0.1.</span> <span class="nav-text">加载</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#验证"><span class="nav-number">1.0.2.0.0.2.</span> <span class="nav-text">验证</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#准备"><span class="nav-number">1.0.2.0.0.3.</span> <span class="nav-text">准备</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#解析"><span class="nav-number">1.0.2.0.0.4.</span> <span class="nav-text">解析</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#初始化"><span class="nav-number">1.0.2.0.0.5.</span> <span class="nav-text">初始化</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#类加载器"><span class="nav-number">1.0.3.</span> <span class="nav-text">类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#双亲委派模型"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">双亲委派模型</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/lgsdaredevil/newblog/tree/resource-newblog" target="_blank">resource-newblog</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018  All Rights Reserved.</p>
+        <!--<p id="copyRightEn">Copyright &copy; 2013 - 2018 小森的博客 All Rights Reserved.</p> -->
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客 : <span id="busuanzi_value_site_uv"></span> |  
+				浏览量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/newblog/" class="mobile-nav-link">主页</a>
+  
+    <a href="/newblog/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/newblog/categories" class="mobile-nav-link">分类</a>
+  
+    <a href="/newblog/tags" class="mobile-nav-link">标签</a>
+  
+    <a href="/newblog/about" class="mobile-nav-link">关于</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/newblog/fancybox/jquery.fancybox.css">
+  <script src="/newblog/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/newblog/js/scripts.js"></script>
+
+
+
+
+  <script src="/newblog/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            小森的博客
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 小森的博客 All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>
