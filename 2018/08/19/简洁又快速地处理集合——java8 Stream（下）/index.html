@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>【转】简洁又快速地处理集合——java8 stream（下） | 小森的博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  
+  <meta name="keywords" content="javastream转载" />
+  
+  
+  
+  
+  <meta name="description" content="作者：Howie_Y   主页：www.jianshu.com/u/79638e5f0743  上一篇文章我讲解 Stream 流的基本原理，以及它的基本方法使用，本篇文章我们继续讲解流的其他操作  值得注意的是：学习 Stream 之前必须先学习 lambda 的相关知识。本文也假设读者已经掌握 lambda 的相关知识。 本篇文章主要内容：  一种特化形式的流——数值流 Optional 类">
+<meta name="keywords" content="java,stream,转载">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【转】简洁又快速地处理集合——java8 Stream（下）">
+<meta property="og:url" content="http://github.com/lgsdaredevil/2018/08/19/简洁又快速地处理集合——java8 Stream（下）/index.html">
+<meta property="og:site_name" content="小森的博客">
+<meta property="og:description" content="作者：Howie_Y   主页：www.jianshu.com/u/79638e5f0743  上一篇文章我讲解 Stream 流的基本原理，以及它的基本方法使用，本篇文章我们继续讲解流的其他操作  值得注意的是：学习 Stream 之前必须先学习 lambda 的相关知识。本文也假设读者已经掌握 lambda 的相关知识。 本篇文章主要内容：  一种特化形式的流——数值流 Optional 类">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:updated_time" content="2018-08-19T02:40:19.631Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【转】简洁又快速地处理集合——java8 Stream（下）">
+<meta name="twitter:description" content="作者：Howie_Y   主页：www.jianshu.com/u/79638e5f0743  上一篇文章我讲解 Stream 流的基本原理，以及它的基本方法使用，本篇文章我们继续讲解流的其他操作  值得注意的是：学习 Stream 之前必须先学习 lambda 的相关知识。本文也假设读者已经掌握 lambda 的相关知识。 本篇文章主要内容：  一种特化形式的流——数值流 Optional 类">
+  
+    <link rel="alternate" href="/atom.xml" title="小森的博客" type="application/atom+xml">
+  
+
+  
+
+  <link rel="icon" href="/newblog/css/images/mylogo.jpg">
+  <link rel="apple-touch-icon" href="/newblog/css/images/mylogo.jpg">
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans|Montserrat:700" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic" rel="stylesheet" type="text/css">
+  <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <style type="text/css">
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/9749f0/00000000000000000001008f/27/l?subset_id=2&fvd=n5) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/90cf9f/000000000000000000010091/27/l?subset_id=2&fvd=n7) format("woff2");font-weight:500;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/8a5494/000000000000000000013365/27/l?subset_id=2&fvd=n4) format("woff2");font-weight:lighter;font-style:normal;}
+    @font-face{font-family:futura-pt;src:url(https://use.typekit.net/af/d337d8/000000000000000000010095/27/l?subset_id=2&fvd=i4) format("woff2");font-weight:400;font-style:italic;}</style>
+  <link rel="stylesheet" href="/newblog/css/style.css">
+
+  <script src="/newblog/js/jquery-3.1.1.min.js"></script>
+  <script src="/newblog/js/bootstrap.js"></script>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="/newblog/css/bootstrap.css" >
+
+  
+    <link rel="stylesheet" href="/newblog/css/dialog.css">
+  
+
+  
+
+  
+    <link rel="stylesheet" href="/newblog/css/header-post.css" >
+  
+
+  
+  
+  
+    <link rel="stylesheet" href="/newblog/css/vdonate.css" >
+  
+
+</head>
+
+
+
+  <body data-spy="scroll" data-target="#toc" data-offset="50">
+
+
+  
+  <div id="container">
+    <div id="wrap">
+      
+        <header>
+
+    <div id="allheader" class="navbar navbar-default navbar-static-top" role="navigation">
+        <div class="navbar-inner">
+          
+          <div class="container"> 
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+
+            
+              <a class="brand" style="
+                 margin-top: 0px;"  
+                href="#" data-toggle="modal" data-target="#myModal" >
+                  <img width="124px" height="124px" alt="Hike News" src="/newblog/css/images/mylogo.jpg">
+              </a>
+            
+            
+            <div class="navbar-collapse collapse">
+              <ul class="hnav navbar-nav">
+                
+                  <li> <a class="main-nav-link" href="/newblog/">主页</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/archives">文章</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/categories">分类</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/tags">标签</a> </li>
+                
+                  <li> <a class="main-nav-link" href="/newblog/about">关于</a> </li>
+                
+                  <li><div id="search-form-wrap">
+
+    <form class="search-form">
+        <input type="text" class="ins-search-input search-form-input" placeholder="" />
+        <button type="submit" class="search-form-submit"></button>
+    </form>
+    <div class="ins-search">
+    <div class="ins-search-mask"></div>
+    <div class="ins-search-container">
+        <div class="ins-input-wrapper">
+            <input type="text" class="ins-search-input" placeholder="Type something..." />
+            <span class="ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: 'Posts',
+            PAGES: 'Pages',
+            CATEGORIES: 'Categories',
+            TAGS: 'Tags',
+            UNTITLED: '(Untitled)',
+        },
+        ROOT_URL: '/newblog/',
+        CONTENT_URL: '/newblog/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+<script src="/newblog/js/insight.js"></script>
+
+</div></li>
+            </div>
+          </div>
+                
+      </div>
+    </div>
+
+</header>
+
+
+
+      
+            
+      <div id="content" class="outer">
+        
+          <section id="main" style="float:none;"><article id="post-简洁又快速地处理集合——java8 Stream（下）" style="width: 75%; float:left;" class="article article-type-post" itemscope itemprop="blogPost" >
+  <div id="articleInner" class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="thumb" class="article-title" itemprop="name">
+      【转】简洁又快速地处理集合——java8 Stream（下）
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-meta">
+      
+	<a href="/newblog/2018/08/19/简洁又快速地处理集合——java8 Stream（下）/" class="article-date">
+	  <time datetime="2018-08-19T02:26:04.000Z" itemprop="datePublished">2018-08-19</time>
+	</a>
+
+      
+    <a class="article-category-link" href="/newblog/categories/技术文章/">技术文章</a>
+
+      
+	<a class="article-views">
+	<span id="busuanzi_container_page_pv">
+		PV:<span id="busuanzi_value_page_pv"></span>
+	</span>
+	</a>
+
+    </div>
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p>作者：Howie_Y</p>
+</blockquote>
+<blockquote>
+<p>主页：<a href="http://www.jianshu.com/u/79638e5f0743" target="_blank" rel="noopener">www.jianshu.com/u/79638e5f0743</a></p>
+</blockquote>
+<p>上一篇文章我讲解 Stream 流的基本原理，以及它的基本方法使用，本篇文章我们继续讲解流的其他操作 </p>
+<p><em>值得注意的是：学习 Stream 之前必须先学习 lambda 的相关知识。本文也假设读者已经掌握 lambda 的相关知识。</em></p>
+<p><strong>本篇文章主要内容：</strong></p>
+<ol>
+<li>一种特化形式的流——数值流</li>
+<li>Optional 类</li>
+<li>如何构建一个流</li>
+<li>collect 方法</li>
+<li>并行流相关问题</li>
+</ol>
+<p><strong>一. 数值流</strong></p>
+<p>前面介绍的如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> sum = list.stream().map(Person::getAge).reduce(<span class="hljs-number">0</span>, Integer::sum);<br></code></pre></td></tr></table></figure>
+<p>计算元素总和的方法其中暗含了装箱成本，map(Person::getAge) 方法过后流变成了 Stream类型，而每个 Integer 都要拆箱成一个原始类型再进行 sum 方法求和，这样大大影响了效率。</p>
+<p>针对这个问题 Java 8 有良心地引入了数值流 IntStream, DoubleStream, LongStream，这种流中的元素都是原始数据类型，分别是 int，double，long</p>
+<p><strong>1. 流与数值流的转换</strong></p>
+<p><strong>流转换为数值流</strong></p>
+<ul>
+<li>mapToInt(T -&gt; int) : return IntStream</li>
+<li>mapToDouble(T -&gt; double) : return DoubleStream</li>
+<li>mapToLong(T -&gt; long) : return LongStream</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">IntStream intStream = list.stream().mapToInt(Person::getAge);<br></code></pre></td></tr></table></figure>
+<p>当然如果是下面这样便会出错 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">LongStream longStream = list.stream().mapToInt(Person::getAge);<br></code></pre></td></tr></table></figure>
+<p>因为 getAge 方法返回的是 int 类型（返回的如果是 Integer，一样可以转换为 IntStream）</p>
+<p><strong>数值流转换为流</strong></p>
+<p>很简单，就一个 boxed</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jav">Stream&lt;Integer&gt; stream = intStream.boxed();<br></code></pre></td></tr></table></figure>
+<p><strong>2. 数值流方法</strong></p>
+<p>下面这些方法作用不用多说，看名字就知道：</p>
+<ul>
+<li>sum()</li>
+<li>max()</li>
+<li>min()</li>
+<li>average() 等…</li>
+</ul>
+<p><strong>3. 数值范围</strong></p>
+<p>IntStream 与 LongStream 拥有 range 和 rangeClosed 方法用于数值范围处理</p>
+<ul>
+<li>IntStream ： rangeClosed(int, int) / range(int, int)</li>
+<li>LongStream ： rangeClosed(long, long) / range(long, long)</li>
+</ul>
+<p>这两个方法的区别在于一个是闭区间，一个是半开半闭区间：</p>
+<ul>
+<li>rangeClosed(1, 100) ：[1, 100]</li>
+<li>range(1, 100) ：[1, 100)</li>
+</ul>
+<p>我们可以利用 IntStream.rangeClosed(1, 100) 生成 1 到 100 的数值流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//求 1 到 10 的数值总和：</span><br>IntStream intStream = IntStream.rangeClosed(<span class="hljs-number">1</span>, <span class="hljs-number">10</span>);<br><span class="hljs-keyword">int</span> sum = intStream.sum();<br></code></pre></td></tr></table></figure>
+<p><strong>二. Optional 类</strong></p>
+<p>NullPointerException 可以说是每一个 Java 程序员都非常讨厌看到的一个词，针对这个问题， Java 8 引入了一个新的容器类 Optional，可以代表一个值存在或不存在，这样就不用返回容易出问题的 null。之前文章的代码中就经常出现这个类，也是针对这个问题进行的改进。</p>
+<p>Optional 类比较常用的几个方法有：</p>
+<ul>
+<li>isPresent() ：值存在时返回 true，反之 flase</li>
+<li>get() ：返回当前值，若值不存在会抛出异常</li>
+<li>orElse(T) ：值存在时返回该值，否则返回 T 的值</li>
+</ul>
+<p>Optional 类还有三个特化版本 OptionalInt，OptionalLong，OptionalDouble，刚刚讲到的数值流中的 max 方法返回的类型便是这个</p>
+<p>Optional 类其中其实还有很多学问，讲解它说不定也要开一篇文章，这里先讲那么多，先知道基本怎么用就可以。</p>
+<p><strong>三. 构建流</strong></p>
+<p>之前我们得到一个流是通过一个原始数据源转换而来，其实我们还可以直接构建得到流。</p>
+<p><strong>1. 值创建流</strong></p>
+<p>Stream.of(T…) ： Stream.of(“aa”, “bb”) 生成流</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//生成一个字符串流</span><br>Stream&lt;String&gt; stream = Stream.of(<span class="hljs-string">"aaa"</span>, <span class="hljs-string">"bbb"</span>, <span class="hljs-string">"ccc"</span>);<br></code></pre></td></tr></table></figure>
+<p>Stream.empty() : 生成空流</p>
+<p><strong>2. 数组创建流</strong></p>
+<p>根据参数的数组类型创建对应的流：</p>
+<ul>
+<li>Arrays.stream(T[ ])</li>
+<li>Arrays.stream(int[ ])</li>
+<li>Arrays.stream(double[ ])</li>
+<li>Arrays.stream(long[ ])</li>
+</ul>
+<p>值得注意的是，还可以规定只取数组的某部分，用到的是Arrays.stream(T[], int, int)</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//只取索引第 1 到第 2 位的：</span><br><span class="hljs-keyword">int</span>[] a = &#123;<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>&#125;;<br>Arrays.stream(a, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>).forEach(System.out :: println);<br><span class="hljs-comment">//打印 2 ，3</span><br></code></pre></td></tr></table></figure>
+<p><strong>3. 文件生成流</strong> </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Stream&lt;String&gt; stream = Files.lines(Paths.get(<span class="hljs-string">"data.txt"</span>));<br></code></pre></td></tr></table></figure>
+<p>每个元素是给定文件的其中一行</p>
+<p><strong>4. 函数生成流</strong></p>
+<p>两个方法：</p>
+<ul>
+<li>iterate ： 依次对每个新生成的值应用函数</li>
+<li>generate ：接受一个函数，生成一个新的值</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java">Stream.iterate(<span class="hljs-number">0</span>, n -&gt; n + <span class="hljs-number">2</span>)<br><span class="hljs-comment">//生成流，首元素为 0，之后依次加 2</span><br>Stream.generate(Math :: random)<br><span class="hljs-comment">//生成流，为 0 到 1 的随机双精度数</span><br>Stream.generate(() -&gt; <span class="hljs-number">1</span>)<br><span class="hljs-comment">//生成流，元素全为 1</span><br></code></pre></td></tr></table></figure>
+<p><strong>四. collect 收集数据</strong></p>
+<p>coollect 方法作为终端操作，接受的是一个 Collector 接口参数，能对数据进行一些收集归总操作</p>
+<p><strong>1. 收集</strong></p>
+<p>最常用的方法，把流中所有元素收集到一个 List, Set 或 Collection 中</p>
+<ul>
+<li>toList</li>
+<li>toSet</li>
+<li>toCollection</li>
+<li>toMap</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs java">List newlist = list.stream.collect(toList());<br><span class="hljs-comment">//如果 Map 的 Key 重复了，可是会报错的哦</span><br>Map&lt;Integer, Person&gt; map = list.stream().collect(toMap(Person::getAge, p -&gt; p));<br></code></pre></td></tr></table></figure>
+<p><strong>2. 汇总</strong></p>
+<p><strong>（1）counting</strong></p>
+<p>用于计算总和：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">long</span> l = list.stream().collect(counting());<br></code></pre></td></tr></table></figure>
+<p>没错，你应该想到了，下面这样也可以： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">long</span> l = list.stream().count();<br></code></pre></td></tr></table></figure>
+<p>推荐第二种</p>
+<p><strong>（2）summingInt ，summingLong ，summingDouble</strong></p>
+<p>summing，没错，也是计算总和，不过这里需要一个函数参数</p>
+<p>计算 Person 年龄总和：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> sum = list.stream().collect(summingInt(Person::getAge));<br></code></pre></td></tr></table></figure>
+<p>当然，这个可以也简化为： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> sum = list.stream().mapToInt(Person::getAge).sum();<br></code></pre></td></tr></table></figure>
+<p>除了上面两种，其实还可以： </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> sum = list.stream().map(Person::getAge).reduce(Interger::sum).get();<br></code></pre></td></tr></table></figure>
+<p>推荐第二种</p>
+<p>由此可见，函数式编程通常提供了多种方式来完成同一种操作</p>
+<p><strong>（3）averagingInt，averagingLong，averagingDouble</strong></p>
+<p>看名字就知道，求平均数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Double average = list.stream().collect(averagingInt(Person::getAge));<br></code></pre></td></tr></table></figure>
+<p>当然也可以这样写 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">OptionalDouble average = list.stream().mapToInt(Person::getAge).average();<br></code></pre></td></tr></table></figure>
+<p>不过要注意的是，这两种返回的值是不同类型的</p>
+<p><strong>（4）summarizingInt，summarizingLong，summarizingDouble</strong></p>
+<p>这三个方法比较特殊，比如 summarizingInt 会返回 IntSummaryStatistics 类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">IntSummaryStatistics l = list.stream().collect(summarizingInt(Person::getAge));<br></code></pre></td></tr></table></figure>
+<p>IntSummaryStatistics 包含了计算出来的平均值，总数，总和，最值，可以通过下面这些方法获得相应的数据 </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java">getAverage()                                         <span class="hljs-function"><span class="hljs-keyword">double</span><br><span class="hljs-title">getCount</span><span class="hljs-params">()</span>                                           <span class="hljs-keyword">long</span><br><span class="hljs-title">getMax</span><span class="hljs-params">()</span>										 <span class="hljs-keyword">int</span><br><span class="hljs-title">getMin</span><span class="hljs-params">()</span>										 <span class="hljs-keyword">int</span><br><span class="hljs-title">getSum</span><span class="hljs-params">()</span>										 <span class="hljs-keyword">long</span></span><br></code></pre></td></tr></table></figure>
+<p><strong>3. 取最值</strong></p>
+<p>maxBy，minBy 两个方法，需要一个 Comparator 接口作为参数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Optional&lt;Person&gt; optional = list.stream().collect(maxBy(comparing(Person::getAge)));<br></code></pre></td></tr></table></figure>
+<p>我们也可以直接使用 max 方法获得同样的结果</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Optional&lt;Person&gt; optional = list.stream().max(comparing(Person::getAge));<br></code></pre></td></tr></table></figure>
+<p><strong>4. joining 连接字符串</strong></p>
+<p>也是一个比较常用的方法，对流里面的字符串元素进行连接，其底层实现用的是专门用于字符串连接的 StringBuilder</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java">String s = list.stream().map(Person::getName).collect(Collectors.joining());<br><span class="hljs-comment">//结果：jackmiketom</span><br>String s = list.stream().map(Person::getName).collect(Collectors.joining(<span class="hljs-string">","</span>));<br><span class="hljs-comment">//结果：jack,mike,tom</span><br></code></pre></td></tr></table></figure>
+<p>joining 还有一个比较特别的重载方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs java">String s = list.stream().map(Person::getName).collect(Collectors.joining(<span class="hljs-string">" and "</span>, <span class="hljs-string">"Today "</span>, <span class="hljs-string">" play games."</span>));<br><span class="hljs-comment">//结果：Today jack and mike and tom play games.</span><br></code></pre></td></tr></table></figure>
+<p>即 Today 放开头，play games. 放结尾，and 在中间连接各个字符串</p>
+<p><strong>5. groupingBy 分组</strong></p>
+<p>groupingBy 用于将数据分组，最终返回一个 Map 类型</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Map&lt;Integer, List&lt;Person&gt;&gt; map = list.stream().collect(groupingBy(Person::getAge));<br></code></pre></td></tr></table></figure>
+<p>例子中我们按照年龄 age 分组，每一个 Person 对象中年龄相同的归为一组</p>
+<p>另外可以看出，Person::getAge 决定 Map 的键（Integer 类型），list 类型决定 Map 的值（List类型）</p>
+<p><strong>多级分组</strong></p>
+<p>groupingBy 可以接受一个第二参数实现多级分组：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Map&lt;Integer, Map&lt;T, List&lt;Person&gt;&gt;&gt; map = list.stream().collect(groupingBy(Person::getAge, groupingBy(...)));<br></code></pre></td></tr></table></figure>
+<p>其中返回的 Map 键为 Integer 类型，值为 Map&lt;t, list</p>
+<p><strong>按组收集数据</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">Map&lt;Integer, Integer&gt; map = list.stream().collect(groupingBy(Person::getAge, summingInt(Person::getAge)));<br></code></pre></td></tr></table></figure>
+<p>该例子中，我们通过年龄进行分组，然后 summingInt(Person::getAge)) 分别计算每一组的年龄总和（Integer），最终返回一个 Map</p>
+<p>根据这个方法，我们可以知道，前面我们写的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">groupingBy(Person::getAge)<br></code></pre></td></tr></table></figure>
+<p>其实等同于：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java">groupingBy(Person::getAge, toList())<br></code></pre></td></tr></table></figure>
+<p><strong>6. partitioningBy 分区</strong></p>
+<p>分区与分组的区别在于，分区是按照 true 和 false 来分的，因此partitioningBy 接受的参数的 lambda 也是 T -&gt; boolean</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//根据年龄是否小于等于20来分区</span><br>Map&lt;Boolean, List&lt;Person&gt;&gt; map = list.stream()<br>                                    .collect(partitioningBy(p -&gt; p.getAge() &lt;= <span class="hljs-number">20</span>));<br><span class="hljs-comment">//打印输出</span><br>&#123;<br>   <span class="hljs-keyword">false</span>=[Person&#123;name=<span class="hljs-string">'mike'</span>, age=<span class="hljs-number">25</span>&#125;, Person&#123;name=<span class="hljs-string">'tom'</span>, age=<span class="hljs-number">30</span>&#125;], <br>   <span class="hljs-keyword">true</span>=[Person&#123;name=<span class="hljs-string">'jack'</span>, age=<span class="hljs-number">20</span>&#125;]<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>同样地 partitioningBy 也可以添加一个收集器作为第二参数，进行类似 groupBy 的多重分区等等操作。</p>
+<p><strong>五. 并行</strong></p>
+<p>我们通过 list.stream() 将 List 类型转换为流类型，我们还可以通过 list.parallelStream() 转换为并行流。因此你通常可以使用 parallelStream 来代替 stream 方法</p>
+<p>并行流就是把内容分成多个数据块，使用不同的线程分别处理每个数据块的流。这也是流的一大特点，要知道，在 Java 7 之前，并行处理数据集合是非常麻烦的，你得自己去将数据分割开，自己去分配线程，必要时还要确保同步避免竞争。</p>
+<p>Stream 让程序员能够比较轻易地实现对数据集合的并行处理，但要注意的是，不是所有情况的适合，有些时候并行甚至比顺序进行效率更低，而有时候因为线程安全问题，还可能导致数据的处理错误，这些我会在下一篇文章中讲解。</p>
+<p>比方说下面这个例子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">int</span> i = Stream.iterate(<span class="hljs-number">1</span>, a -&gt; a + <span class="hljs-number">1</span>).limit(<span class="hljs-number">100</span>).parallel().reduce(<span class="hljs-number">0</span>, Integer::sum);<br></code></pre></td></tr></table></figure>
+<p>我们通过这样一行代码来计算 1 到 100 的所有数的和，我们使用了 parallel 来实现并行。</p>
+<p>但实际上是，这样的计算，效率是非常低的，比不使用并行还低！一方面是因为装箱问题，这个前面也提到过，就不再赘述，还有一方面就是 iterate 方法很难把这些数分成多个独立块来并行执行，因此无形之中降低了效率。</p>
+<p><strong>流的可分解性</strong></p>
+<p>这就说到流的可分解性问题了，使用并行的时候，我们要注意流背后的数据结构是否易于分解。比如众所周知的 ArrayList 和 LinkedList，明显前者在分解方面占优。</p>
+<p><strong>我们来看看一些数据源的可分解性情况</strong></p>
+<p>数据源可分解性ArrayList极佳LinkedList差IntStream.range极佳Stream.iterate差HashSet好TreeSet好顺序性。</p>
+<p>除了可分解性，和刚刚提到的装箱问题，还有一点值得注意的是一些操作本身在并行流上的性能就比顺序流要差，比如：limit，findFirst，因为这两个方法会考虑元素的顺序性，而并行本身就是违背顺序性的，也是因为如此 findAny 一般比 findFirst 的效率要高。</p>
+<p><strong>六. 效率</strong></p>
+<p>最后再来谈谈效率问题，很多人可能听说过有关 Stream 效率低下的问题。其实，对于一些简单的操作，比如单纯的遍历，查找最值等等，Stream 的性能的确会低于传统的循环或者迭代器实现，甚至会低很多。</p>
+<p>但是对于复杂的操作，比如一些复杂的对象归约，Stream 的性能是可以和手动实现的性能匹敌的，在某些情况下使用并行流，效率可能还远超手动实现。好钢用在刀刃上，在适合的场景下使用，才能发挥其最大的用处。</p>
+<p>函数式接口的出现主要是为了提高编码开发效率以及增强代码可读性；与此同时，在实际的开发中，并非总是要求非常高的性能，因此 Stream 与 lambda 的出现意义还是非常大的。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <div id="donation_div"></div>
+
+<script src="/newblog/js/vdonate.js"></script>
+<script>
+var a = new Donate({
+  title: '如果觉得我的文章对您有用，请随意打赏。您的支持将鼓励我继续创作!', // 可选参数，打赏标题
+  btnText: 'Donate', // 可选参数，打赏按钮文字
+  el: document.getElementById('donation_div'),
+  wechatImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/wechatlike.jpg',
+  alipayImage: 'https://raw.githubusercontent.com/lgsdaredevil/newblog/master/css/images/alipay.png'
+});
+</script>
+      
+      
+      <div>
+        <ul class="post-copyright">
+          <li class="post-copyright-author">
+          <strong>Post author:  </strong></a>
+          </li>
+          <li class="post-copyright-link">
+          <strong>Post link:  </strong>
+          <a href="/newblog/2018/08/19/简洁又快速地处理集合——java8 Stream（下）/" target="_blank" title="【转】简洁又快速地处理集合——java8 Stream（下）">http://github.com/lgsdaredevil/2018/08/19/简洁又快速地处理集合——java8 Stream（下）/</a>
+          </li>
+          <li class="post-copyright-license">
+            <strong>Copyright Notice:   </strong>
+            All articles in this blog are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" title="Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)">CC BY-NC-ND 4.0</a>
+            unless stating additionally.
+          </li>
+         
+        </ul>
+<div>
+
+      
+      
+        
+	<div id="comment">
+		<!-- 来必力City版安装代码 -->
+		<div id="lv-container" data-id="city" data-uid="MTAyMC8yOTQ4MS82MDQ5">
+		<script type="text/javascript">
+		   (function(d, s) {
+		       var j, e = d.getElementsByTagName(s)[0];
+
+		       if (typeof LivereTower === 'function') { return; }
+
+		       j = d.createElement(s);
+		       j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+		       j.async = true;
+
+		       e.parentNode.insertBefore(j, e);
+		   })(document, 'script');
+		</script>
+		<noscript>为正常使用来必力评论功能请激活JavaScript</noscript>
+		</div>
+		<!-- City版安装代码已完成 -->
+	</div>
+
+
+
+      
+      
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/newblog/2018/08/19/简洁又快速地处理集合——java8 Stream（上）/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">【转】简洁又快速地处理集合——java8 Stream（上）</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+<!-- Table of Contents -->
+
+  <aside id="toc-sidebar">
+    <div id="toc" class="toc-article">
+    <strong class="toc-title">Contents</strong>
+    
+        <ol class="nav">None</ol>
+    
+    </div>
+  </aside>
+
+</section>
+        
+      </div>
+      
+      <footer id="footer">
+  
+
+  <div class="container">
+      	<div class="row">
+	      <p> Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/lgsdaredevil/newblog/tree/resource-newblog" target="_blank">resource-newblog</a> </p>
+	      <p id="copyRightEn">Copyright &copy; 2013 - 2018  All Rights Reserved.</p>
+        <!--<p id="copyRightEn">Copyright &copy; 2013 - 2018 小森的博客 All Rights Reserved.</p> -->
+	      
+	      
+    		<p class="busuanzi_uv">
+				访客 : <span id="busuanzi_value_site_uv"></span> |  
+				浏览量 : <span id="busuanzi_value_site_pv"></span>
+		    </p>
+  		   
+		</div>
+
+		
+  </div>
+</footer>
+
+
+<!-- min height -->
+
+<script>
+    var wrapdiv = document.getElementById("wrap");
+    var contentdiv = document.getElementById("content");
+    var allheader = document.getElementById("allheader");
+
+    wrapdiv.style.minHeight = document.body.offsetHeight + "px";
+    if (allheader != null) {
+      contentdiv.style.minHeight = document.body.offsetHeight - allheader.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    } else {
+      contentdiv.style.minHeight = document.body.offsetHeight - document.getElementById("footer").offsetHeight + "px";
+    }
+</script>
+    </div>
+    <!-- <nav id="mobile-nav">
+  
+    <a href="/newblog/" class="mobile-nav-link">主页</a>
+  
+    <a href="/newblog/archives" class="mobile-nav-link">文章</a>
+  
+    <a href="/newblog/categories" class="mobile-nav-link">分类</a>
+  
+    <a href="/newblog/tags" class="mobile-nav-link">标签</a>
+  
+    <a href="/newblog/about" class="mobile-nav-link">关于</a>
+  
+</nav> -->
+    
+
+<!-- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      processEscapes: true
+    }
+  });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for(i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+
+  <link rel="stylesheet" href="/newblog/fancybox/jquery.fancybox.css">
+  <script src="/newblog/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/newblog/js/scripts.js"></script>
+
+
+
+
+  <script src="/newblog/js/dialog.js"></script>
+
+
+
+
+
+
+
+
+	<div style="display: none;">
+    <script src="https://s95.cnzz.com/z_stat.php?id=1260716016&web_id=1260716016" language="JavaScript"></script>
+  </div>
+
+
+
+	<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+	</script>
+
+
+
+
+
+
+  </div>
+
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 class="modal-title" id="myModalLabel">设置</h2>
+      </div>
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+
+
+      <div class="modal-body">
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" onclick="javascript:setFontSize();" aria-expanded="true" aria-controls="collapseOne">
+              正文字号大小
+            </a>
+          </div>
+          <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+          <div class="panel-body">
+            您已调整页面字体大小
+          </div>
+        </div>
+      
+
+
+          <div style="margin:6px;">
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" onclick="javascript:setBackground();" aria-expanded="true" aria-controls="collapseTwo">
+              夜间护眼模式
+            </a>
+        </div>
+          <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+          <div class="panel-body">
+            夜间模式已经开启，再次单击按钮即可关闭 
+          </div>
+        </div>
+
+        <div>
+            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="true" aria-controls="collapseThree">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;关 于&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        </div>
+         <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+          <div class="panel-body">
+            小森的博客
+          </div>
+          <div class="panel-body">
+            Copyright © 2018 小森的博客 All Rights Reserved.
+          </div>
+        </div>
+      </div>
+
+
+      <hr style="margin-top:0px; margin-bottom:0px; width:80%; border-top: 1px solid #000;">
+      <hr style="margin-top:2px; margin-bottom:0px; width:80%; border-top: 3px solid #000;">
+      <div class="modal-footer">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <a id="rocket" href="#top" class=""></a>
+  <script type="text/javascript" src="/js/totop.js?v=1.0.0" async=""></script>
+  
+    <a id="menu-switch"><i class="fa fa-bars fa-lg"></i></a>
+  
+</body>
+</html>

@@ -6,10 +6,78 @@
   <link href="/newblog/atom.xml" rel="self"/>
   
   <link href="http://github.com/lgsdaredevil/"/>
-  <updated>2018-08-11T02:04:55.986Z</updated>
+  <updated>2018-08-19T02:40:19.631Z</updated>
   <id>http://github.com/lgsdaredevil/</id>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【转】简洁又快速地处理集合——java8 Stream（下）</title>
+    <link href="http://github.com/lgsdaredevil/2018/08/19/%E7%AE%80%E6%B4%81%E5%8F%88%E5%BF%AB%E9%80%9F%E5%9C%B0%E5%A4%84%E7%90%86%E9%9B%86%E5%90%88%E2%80%94%E2%80%94java8%20Stream%EF%BC%88%E4%B8%8B%EF%BC%89/"/>
+    <id>http://github.com/lgsdaredevil/2018/08/19/简洁又快速地处理集合——java8 Stream（下）/</id>
+    <published>2018-08-19T02:26:04.000Z</published>
+    <updated>2018-08-19T02:40:19.631Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;作者：Howie_Y&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;主页：&lt;a href=&quot;http://www.jianshu.com/u/79638e5f0743&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="技术文章" scheme="http://github.com/lgsdaredevil/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/"/>
+    
+    
+      <category term="java" scheme="http://github.com/lgsdaredevil/tags/java/"/>
+    
+      <category term="stream" scheme="http://github.com/lgsdaredevil/tags/stream/"/>
+    
+      <category term="转载" scheme="http://github.com/lgsdaredevil/tags/%E8%BD%AC%E8%BD%BD/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【转】简洁又快速地处理集合——java8 Stream（上）</title>
+    <link href="http://github.com/lgsdaredevil/2018/08/19/%E7%AE%80%E6%B4%81%E5%8F%88%E5%BF%AB%E9%80%9F%E5%9C%B0%E5%A4%84%E7%90%86%E9%9B%86%E5%90%88%E2%80%94%E2%80%94java8%20Stream%EF%BC%88%E4%B8%8A%EF%BC%89/"/>
+    <id>http://github.com/lgsdaredevil/2018/08/19/简洁又快速地处理集合——java8 Stream（上）/</id>
+    <published>2018-08-19T02:06:50.000Z</published>
+    <updated>2018-08-19T02:27:16.062Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;作者：Howie_Y&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;主页：&lt;a href=&quot;http://www.jianshu.com/u/79638e5f0743&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="技术文章" scheme="http://github.com/lgsdaredevil/categories/%E6%8A%80%E6%9C%AF%E6%96%87%E7%AB%A0/"/>
+    
+    
+      <category term="java" scheme="http://github.com/lgsdaredevil/tags/java/"/>
+    
+      <category term="stream" scheme="http://github.com/lgsdaredevil/tags/stream/"/>
+    
+      <category term="转载" scheme="http://github.com/lgsdaredevil/tags/%E8%BD%AC%E8%BD%BD/"/>
+    
+  </entry>
   
   <entry>
     <title>java虚拟机笔记（三）</title>
